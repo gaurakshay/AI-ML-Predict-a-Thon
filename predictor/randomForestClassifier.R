@@ -7,7 +7,7 @@ setwd("C:/software/part1")
 train <- read.csv('Train.csv', header = TRUE, colClasses = c("sessionId"="character"))
 test <- read.csv('Test.csv', header = TRUE, colClasses = c("sessionId"="character"))
 
-rem_col <- c('adContent', 'adwordsClickInfo.adNetworkType', 'adwordsClickInfo.gclId', 'adwordsClickInfo.isVideoAd', 'adwordsClickInfo.page', 'adwordsClickInfo.slot', 'campaign', 'keyword', 'metro')
+rem_col <- c('date', 'adContent', 'adwordsClickInfo.adNetworkType', 'adwordsClickInfo.gclId', 'adwordsClickInfo.isVideoAd', 'adwordsClickInfo.page', 'adwordsClickInfo.slot', 'campaign', 'keyword', 'metro')
 train <- train[, ! names(train) %in% rem_col ]
 train$purchased <- rep(NA, nrow(train))
 train[train$revenue > 0, ]$purchased <- 1
@@ -28,6 +28,6 @@ rf_mod <- randomForest(purchased ~ ., data = train[, -c(1,2)], mtry = 5, importa
 rf_mod
 
 
-test$predictions <- predict(rf_mod, test[, -c(1,2)], type="class")
-non_duplicate <- test[!duplicated(test[, 1]), c(1, 26)]
-write.csv(non_duplicate, file="predictedv2.csv")
+test$predictedClass <- predict(rf_mod, test[, -c(1,2)], type="class")
+non_duplicate <- test[, c(1, 26)]
+write.csv(non_duplicate, file="predictedClasses.csv", quote = FALSE, row.names = FALSE)
