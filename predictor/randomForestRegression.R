@@ -19,5 +19,5 @@ test[, ] <- lapply(test[, ], unclass)
 rf_mod <- randomForest(revenue ~ ., data = train[, -c(1,2)], mtry = 5, importance = TRUE)
 
 test$predRevenue <- predict(rf_mod, test[, -c(1,2)])
-non_duplicate <- test[!duplicated(test$custId), c(1, 26)]
-write.csv(non_duplicate, file="predictedRegression.csv", quote = FALSE, row.names = FALSE)
+grouped <- aggregate(predRevenue ~ custId, test, sum)
+write.csv(grouped, file="predictedRegression.csv", quote = FALSE, row.names = FALSE)
